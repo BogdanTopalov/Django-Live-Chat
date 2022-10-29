@@ -1,5 +1,14 @@
 # Django-Live-Chat
- 
+
+## Quick look:
+
+Anonymous user:  
+<img src="https://i.postimg.cc/t4nVrzs7/Anonymous-chat.gif" alt="gif"/>
+
+Registered user:  
+<img src="https://i.postimg.cc/t4nVrzs7/Anonymous-chat.gif" alt="gif"/>
+
+
 ## Set up DB:
 You need to have Docker installed!
 
