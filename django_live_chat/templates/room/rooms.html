@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+    {% if user.is_staff %}
+        <h1>All Rooms</h1>
+        <div>
+            {% for room in rooms %}
+                <h2>
+                    <a href="{% url 'room' room.slug %}">
+                        {{ room.name }}
+                    </a>
+                </h2>
+            {% endfor %}
+        </div>
+
+    {% elif user.is_authenticated %}
+        <h1>My Rooms</h1>
+        <div>
+            {% for room in rooms %}
+                {% if room.creator == user %}
+                    <h2>
+                        <a href="{% url 'room' room.slug %}">
+                            {{ room.name }}
+                        </a>
+                    </h2>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+    {% elif user.is_anonymous %}
+        <h1>
+            <a href="{% url 'register page' %}">
+                Register
+            </a>
+            or
+            <a href="{% url 'login page' %}">
+                Log in
+            </a>
+            to see your rooms.
+        </h1>
+    {% endif %}
+{% endblock %}

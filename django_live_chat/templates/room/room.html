@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+    <h1>{{ room.name }}</h1>
+
+    <div id="messages">
+        {% for message in messages %}
+            <p><strong>{{ message.user }}</strong>: {{ message.text }}</p>
+        {% endfor %}
+    </div>
+
+    <form id="chat-form" method="POST">
+        <input id="chat-message" type="text" name="message" placeholder="Type message here...">
+        <button type="submit">Send</button>
+    </form>
+{% endblock %}
+
+{% block script_content %}
+    {{ room.slug|json_script:"json-roomname" }}
+    {{ request.user.username|json_script:"json-username" }}
+
+    <script>
+        const roomName = JSON.parse(document.getElementById("json-roomname").textContent)
+        const user = JSON.parse(document.getElementById("json-username").textContent)
+        const username = user ? user : 'Anonymous'
+        console.log(username)
+        const url = `ws://${window.location.host}/ws/${roomName}/`
+
+        const chatSocket = new WebSocket(url)
+
+        chatSocket.onmessage = (e) => {
+            const data = JSON.parse(e.data)
+
+
+            if (data.message){
+                let strong = document.createElement('strong')
+                strong.textContent = `${data.username}: `
+
+                let p = document.createElement('p')
+                p.appendChild(strong)
+                p.append(data.message)
+
+                document.getElementById('messages').appendChild(p)
+            }
+
+            if (data.connection_message) {
+                let h4 = document.createElement('h4')
+                h4.textContent = data.connection_message
+
+                document.getElementById('messages').appendChild(h4)
+            }
+        }
+
+        chatSocket.onopen = (e) => {
+            {#chatSocket.send(JSON.stringify({#}
+            {#    'message': '',#}
+            {#    'username': username,#}
+            {#    'room': roomName,#}
+            {#    'connection_message': `${username} entered the chat.`#}
+        }
+
+        chatSocket.onclose = (e) => {
+            {#chatSocket.send(JSON.stringify({#}
+            {#    'message': '',#}
+            {#    'username': username,#}
+            {#    'room': roomName,#}
+            {#    'connection_message': `${username} left the chat.`#}
+        }
+
+        const form = document.querySelector('#chat-form')
+        form.addEventListener("submit", (e) => {
+            e.preventDefault()
+
+            const input = document.getElementById('chat-message')
+            const message = input.value
+
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'username': username,
+                'room': roomName,
+                'connection_message': ''
+            }))
+
+            input.value = ''
+        })
+    </script>
+{% endblock %}
