@@ -1,5 +1,6 @@
 from pathlib import Path
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-!3n#^h+54es$_ghtr6_z0h-0f3@u3r)&qfcf@f)n!vjpwllq$6'
@@ -9,14 +10,17 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    'daphne',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'core',
-    
+    'room',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +53,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'django_live_chat.wsgi.application'
+ASGI_APPLICATION = 'django_live_chat.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+}
 
 DATABASES = {
     'default': {
@@ -87,3 +98,5 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'core.User'
